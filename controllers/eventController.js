@@ -154,13 +154,13 @@ const getRsvpPage = async (req, res) => {
     };
 
     if (guest.rsvpStatus === 'Accepted' || guest.rsvpStatus === 'Declined') {
-      responseData.show = 'no';
+      responseData.event.show = 'no';
     }
 
     res.json(responseData);
   } catch (error) {
     console.error('Error displaying RSVP options:', error);
-    res.status(500).json({ message: 'Error displaying RSVP options' });
+    res.status(500).json({ message: 'Error displaying RSVP options' })
   }
 };
 
