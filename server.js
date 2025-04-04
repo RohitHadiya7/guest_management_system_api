@@ -16,6 +16,10 @@ app.use(express.json())
 
 connectDB()
 
+app.get('/', (req, res) => {
+  res.send('guest management system api is running on vercel');
+});
+
 app.use('/auth', authRoutes)
 app.use('/events', eventRoutes)
 
