@@ -132,29 +132,37 @@ const getGuestsForEvent = async (req, res) => {
 
 const getRsvpPage = async (req, res) => {
   try {
-      const guest = await Guest.findOne({ rsvpToken: req.params.token })
-      if (!guest) {
-        return res.status(404).json({ message: 'Invalid RSVP token' });
-      }
+    const guest = await Guest.findOne({ rsvpToken: req.params.token })
 
-      const event = await Event.findById(guest.eventId)
-      if (!event) {
-        return res.status(404).json({ message: 'Event not found' });
-      }
-
-     res.json({
-          event: {
-              name: event.name,
-              date: event.date,
-              time: event.time,
-              location: event.location
-          }
-      });
-    } catch (error) {
-      console.error("Error displaying RSVP options:", error)
-      res.status(500).json({ message: 'Error displaying RSVP options' })
+    if (!guest) {
+      return res.status(404).json({ message: 'Invalid RSVP token' })
     }
-} 
+
+    const event = await Event.findById(guest.eventId);
+
+    if (!event) {
+      return res.status(404).json({ message: 'Event not found' })
+    }
+
+    let responseData = {
+      event: {
+        name: event.name,
+        date: event.date,
+        time: event.time,
+        location: event.location,
+      },
+    };
+
+    if (guest.rsvpStatus === 'Accepted' || guest.rsvpStatus === 'Declined') {
+      responseData.show = 'no';
+    }
+
+    res.json(responseData);
+  } catch (error) {
+    console.error('Error displaying RSVP options:', error);
+    res.status(500).json({ message: 'Error displaying RSVP options' });
+  }
+};
 
 export {
   createEvent,
